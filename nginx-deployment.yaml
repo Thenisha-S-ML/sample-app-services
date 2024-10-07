@@ -17,3 +17,33 @@ spec:
         image: nginx
         ports:
         - containerPort: 80
+        env:
+          - name: APP_ENV
+            valueFrom:
+              configMapKeyRef:
+                name: nginx-config
+                key: APP_ENV
+          - name: APP_LOG_LEVEL
+            valueFrom:
+              configMapKeyRef:
+                name: nginx-config
+                key: APP_LOG_LEVEL
+          - name: API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: nginx-secret
+                key: API_KEY
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: nginx-secret
+                key: DB_PASSWORD
+        volumeMounts:
+          - name: nginx-config-volume
+            mountPath: /etc/nginx/nginx.conf
+            subPath: nginx.conf
+      volumes:
+        - name: nginx-config-volume
+          configMap:
+            name: nginx-config
+
